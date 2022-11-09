@@ -1,4 +1,4 @@
-let preloadScreen, gameScreen, btn, counter, kpcCounter;
+let preloadScreen, gameScreen, btn, counter, kpcCounter, lastSaveTimeText, notifications;
 let emptySave = {
     balance : 0, kpc : 1, kps : 0,
     upgrades : [
@@ -22,20 +22,39 @@ let emptySave = {
             titleId : "up2-title",
             buttonId : "up2-buy"
         }
-    ]
+    ],
+    last_save_time : new Date(Date.now())
 };
 let save = loadSave() || emptySave;
+
+function deleteSave(){
+    save = emptySave;
+    writeSave();
+    createNotification("Сохранение удалено", "red");
+}
+
+function importSave(){
+    alert(JSON.stringify(save));
+}
+
+function exportSave(){
+    save = prompt("Enter save string");
+}
 
 function loadSave(){
     let s;
     try{
         s = JSON.parse(localStorage.getItem("kill_aboba"));
+        s.last_save_time = new Date(s.last_save_time);
     }catch(e){}
     return s;
 }
 
 function writeSave(){
+    save.last_save_time = new Date(Date.now()).toString();
     localStorage.setItem("kill_aboba", JSON.stringify(save));
+    save.last_save_time = new Date(save.last_save_time);
+    createNotification("Сохранение...", "green");
 }
 
 function setTab(tabName){
@@ -65,9 +84,10 @@ function upgradeBuy(upgradeId){
 function draw(){
     counter.innerText = save.balance;
     kpcCounter.innerText = save.kpc;
+    lastSaveTimeText.innerText = save.last_save_time.toLocaleString('ru');
 
     for(let upgrade of save.upgrades){
-        document.getElementById(upgrade.titleId).innerText = `${upgrade.title} (-${upgrade.cost};+${upgrade.clickBonus})`;
+        document.getElementById(upgrade.titleId).innerText = `${upgrade.title} (-${upgrade.cost.toFixed(0)};+${upgrade.clickBonus})`;
         if(upgrade.canBuy){
             document.getElementById(upgrade.buttonId).disabled = false;
         }
@@ -80,6 +100,8 @@ function init(){
     btn = document.querySelector("#game button");
     counter = document.getElementById("counter");
     kpcCounter = document.getElementById("kpc");
+    lastSaveTimeText = document.getElementById("last-save-time");
+    notifications = document.getElementsByClassName("notifications")[0];
 
     setInterval(() => {
         preloadScreen.style.animation = "fadeOut 0.3s ease-out";
@@ -94,7 +116,23 @@ function init(){
 
     setInterval(() => writeSave(), 10000);
     setInterval(() => draw(), 100);
+}
 
+function createNotification(text, color){
+    const notification = document.createElement('div');
+    notification.classList.add('notification');
+    notification.style.backgroundColor = color;
+    notification.innerText = text;
+    notifications.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut .3s ease-out';
+        setTimeout(() => {
+            notification.style.opacity = 0;
+            notification.style.display = "none";
+            notification.remove();
+        }, 300);
+    }, 2500);
 }
 
 document.body.onload = init;

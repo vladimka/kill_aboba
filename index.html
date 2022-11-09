@@ -43,8 +43,17 @@
                 </div>
                 <div class="tab settings">
                     <h1>Настройки</h1>
+                    <h3>Сохранение</h3>
+                    <p>Последнее сохранение <span id="last-save-time">1 января 1970, 00:00</span></p>
+                    <button onclick="deleteSave()">Удалить сохранение</button>
+                    <button onclick="writeSave()">Сохраниться</button>
+                    <button onclick="importSave()">Имопртировать</button>
+                    <button onclick="exportSave()">Экспортировать</button>
                 </div>
             </div>
+        </div>
+        <div class="notifications">
+            
         </div>
     </div>
     <script src="js/index.js"></script>
