@@ -1,0 +1,53 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+#preload{
+    background-color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+    opacity: 1;
+}
+
+@keyframes fadeOut {
+    from{
+        display: flex;
+        opacity: 1;
+    }
+    to{
+        display: none;
+        opacity: 0;
+    }
+}
+
+#preload span{
+    color: grey;
+}
+
+#inner-game{
+    margin: 10px auto;
+    text-align: center;
+}
+
+#inner-game>*{
+    margin: 5px;
+}
+
+.tab{
+	display: none;
+	margin: 10px;
+}
+
+.active{
+	display: block!important;
+}
