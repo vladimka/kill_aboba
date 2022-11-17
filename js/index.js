@@ -1,6 +1,7 @@
-let preloadScreen, gameScreen, btn, counter, kpcCounter, lastSaveTimeText, notifications;
+let preloadScreen, gameScreen, btn, counter, kpcCounter, lastSaveTimeText, notifications, kickTimes, upgradesCount, kpsCounter;
 let emptySave = {
     balance : 0, kpc : 1, kps : 0,
+    kickTimes : 0,
     upgrades : [
         {
             title : 'Отобрать охоту',
@@ -8,23 +9,35 @@ let emptySave = {
             clickBonus : 1,
             secondBonus : 0,
             multiplier : 1.7,
-            canBuy : true,
             titleId : "up1-title",
-            buttonId : "up1-buy"
+            buttonId : "up1-buy",
+            value : 0
+        },
+        {
+            title : 'нанять артёмку',
+            cost : 250,
+            clickBonus : 0,
+            secondBonus : 1,
+            multiplier : 1.5,
+            titleId : "up2-title",
+            buttonId : "up2-buy",
+            value : 0
         },
         {
             title : '"нахуй тебе шнурки"',
             cost : 500,
-            clickBonus : 2,
+            clickBonus : 3,
             secondBonus : 0,
             multiplier : 1.9,
-            canBuy : false,
-            titleId : "up2-title",
-            buttonId : "up2-buy"
+            titleId : "up3-title",
+            buttonId : "up3-buy",
+            value : 0
         }
     ],
-    last_save_time : new Date(Date.now())
+    last_save_time : new Date(Date.now()),
+    saveVersion : 1
 };
+let actualSaveVersion = 1;
 let save = loadSave() || emptySave;
 
 function deleteSave(){
@@ -64,34 +77,40 @@ function setTab(tabName){
 
 function upgradeBuy(upgradeId){
     let upgrade = save.upgrades[upgradeId];
-    let nextUp = save.upgrades[upgradeId + 1];
+    let canBuy = upgradeId == 0 ? true : (save.upgrades[upgradeId - 1].value > 0 ? true : false);
 
-    if(!upgrade.canBuy || save.balance < upgrade.cost)
+    if(!canBuy || save.balance < upgrade.cost)
         return;
 
     save.balance -= upgrade.cost;
     save.kpc += upgrade.clickBonus;
     save.kps += upgrade.secondBonus;
     upgrade.cost *= upgrade.multiplier;
-
-    
-
-    if(nextUp && !nextUp.canBuy){
-        nextUp.canBuy = true;
-    }
+    upgrade.value += 1;
 }
 
 function draw(){
-    counter.innerText = save.balance;
+    counter.innerText = save.balance.toFixed(2);
     kpcCounter.innerText = save.kpc;
     lastSaveTimeText.innerText = save.last_save_time.toLocaleString('ru');
+    kickTimes.innerText = save.kickTimes;
+    upgradesCount.innerText = save.upgrades.reduce((count, up) => count += up.value, 0);
+    kpsCounter.innerText = save.kps;
 
-    for(let upgrade of save.upgrades){
-        document.getElementById(upgrade.titleId).innerText = `${upgrade.title} (-${upgrade.cost.toFixed(0)};+${upgrade.clickBonus})`;
-        if(upgrade.canBuy){
-            document.getElementById(upgrade.buttonId).disabled = false;
-        }
+    for(let i = 0; i < save.upgrades.length; i++){
+        let upgrade = save.upgrades[i];
+        let nextUpgrade = save.upgrades[i + 1] || false;
+
+        document.getElementById(upgrade.titleId).innerText = `${upgrade.title} (-${upgrade.cost.toFixed(0)};+${upgrade.clickBonus} +${upgrade.secondBonus}/c)`;
+
+        if(!nextUpgrade) continue;
+
+        if(upgrade.value < 1){
+            document.getElementById(nextUpgrade.buttonId).disabled = true;
+        }else document.getElementById(nextUpgrade.buttonId).disabled = false;
     }
+
+    save.balance += save.kps / 10
 }
 
 function init(){
@@ -102,6 +121,9 @@ function init(){
     kpcCounter = document.getElementById("kpc");
     lastSaveTimeText = document.getElementById("last-save-time");
     notifications = document.getElementsByClassName("notifications")[0];
+    kickTimes = document.getElementById('kickTimes');
+    upgradesCount = document.getElementById('upgradesCount');
+    kpsCounter = document.getElementById('kps');
 
     setInterval(() => {
         preloadScreen.style.animation = "fadeOut 0.3s ease-out";
@@ -112,6 +134,7 @@ function init(){
 
     btn.onclick = () => {
         save.balance += save.kpc;
+        save.kickTimes += 1;
     }
 
     setInterval(() => writeSave(), 10000);

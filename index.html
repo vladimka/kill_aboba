@@ -18,6 +18,7 @@
         <div id="inner-game">
             <p>Счёт: <span id="counter">0</span></p>
             <p>Пинков за клик: <span id="kpc">1</span></p>
+            <p>Пинков в секунду: <span id="kps">0</span></p>
             <button>пнуть абобу</button>
             <div class="tabs-buttons">
                 <button onclick="setTab('upgrades')">Способы унижения</button>
@@ -33,13 +34,19 @@
                         <button class="upgrade-buy" id="up1-buy" onclick="upgradeBuy(0)">Купить</button>
                     </div>
                     <div class="upgrade">
-                        <p class="upgrade-title" id="up2-title">"нахуй тебе шнурки" (-500; +2)</p>
+                        <p class="upgrade-title" id="up2-title">"нанять артёмку" (-250; +1)</p>
                         <button class="upgrade-buy" id="up2-buy" onclick="upgradeBuy(1)" disabled>Купить</button>
+                    </div>
+                    <div class="upgrade">
+                        <p class="upgrade-title" id="up3-title">"нахуй тебе шнурки" (-500; +2)</p>
+                        <button class="upgrade-buy" id="up3-buy" onclick="upgradeBuy(2)" disabled>Купить</button>
                     </div>
                 </div>
                 <div class="tab stats">
                     <h1>Статистика</h1>
-                    <p>За всю игру вы пнули абобу дохуя раз</p>
+                    <p>За всю игру вы</p>
+                    <p>Пнули абобу <span id="kickTimes">0</span> раз</p>
+                    <p>Купили <span id="upgradesCount">0</span> прокачек</p>
                 </div>
                 <div class="tab settings">
                     <h1>Настройки</h1>
