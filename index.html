@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Убить абобу v0.0.1</title>
+    <title>Убить абобу v0.0.3</title>
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
@@ -25,6 +25,7 @@
                 <button onclick="setTab('upgrades')">Способы унижения</button>
                 <button onclick="setTab('stats')">Статистика</button>
                 <button onclick="setTab('settings')">Настройки</button>
+                <button onclick="setTab('skins')">Скины</button>
             </div>
             <div class="tabs">
                 <div class="tab arena active">
@@ -55,6 +56,7 @@
                     <p>За всю игру вы</p>
                     <p>Пнули абобу <span id="kickTimes">0</span> раз</p>
                     <p>Купили <span id="upgradesCount">0</span> прокачек</p>
+                    <p>Убили Абобу <span id="killed">0</span> раз</p>
                 </div>
                 <div class="tab settings">
                     <h1>Настройки</h1>
@@ -64,6 +66,38 @@
                     <button onclick="writeSave()">Сохраниться</button>
                     <button onclick="importSave()">Имопртировать</button>
                     <button onclick="exportSave()">Экспортировать</button>
+                </div>
+                <div class="tab skins">
+                    <ul>
+                        <li>
+                            <img src="images/aboba.jpg" alt="Абоба">
+                            <div class="skin-info">
+                                <p>Это Абоба, просто Абоба...</p><br>
+                                <button onclick="setSkin('aboba')">Применить</button>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="images/lesha.jpg" alt="Абоба">
+                            <div class="skin-info">
+                                <p>Можно вопрос?</p><br>
+                                <button onclick="setSkin('lesha')">Применить</button>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="images/anfisa.jpg" alt="Абоба">
+                            <div class="skin-info">
+                                <p>Днём и ночью трахает гитару</p><br>
+                                <button onclick="setSkin('anfisa')">Применить</button>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="images/valibalist.jpg" alt="Абоба">
+                            <div class="skin-info">
+                                <p>"Ну конечно"</p><br>
+                                <button onclick="setSkin('valibalist')">Применить</button>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

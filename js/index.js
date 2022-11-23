@@ -1,6 +1,6 @@
 let preloadScreen, gameScreen, btn, counter, kpcCounter,
     lastSaveTimeText, notifications, kickTimes, upgradesCount, kpsCounter,
-    arenaImg, abobaHPSpan, abobaHPProgress;
+    arenaImg, abobaHPSpan, abobaHPProgress, killedSpan;
 let emptySave = {
     balance : 0, kpc : 1, kps : 0,
     kickTimes : 0,
@@ -39,12 +39,13 @@ let emptySave = {
     arena : {
         skin : 'aboba',
         hp : 100,
-        maxhp : 100
+        maxhp : 100,
+        killed : 0
     },
     last_save_time : new Date(Date.now()),
-    version : '0.0.2'
+    version : '0.0.3'
 };
-let actualVersion = '0.0.2';
+let actualVersion = '0.0.3';
 let save = loadSave() || emptySave;
 
 function deleteSave(){
@@ -105,6 +106,8 @@ function draw(){
     kpsCounter.innerText = save.kps;
     abobaHPSpan.innerText = `${save.arena.hp.toFixed(0)}/${save.arena.maxhp.toFixed(0)}`;
     abobaHPProgress.value = save.arena.hp;
+    abobaHPProgress.max = save.arena.maxhp;
+    killedSpan.innerText = save.arena.killed;
 
     for(let i = 0; i < save.upgrades.length; i++){
         let upgrade = save.upgrades[i];
@@ -119,6 +122,15 @@ function draw(){
         }else document.getElementById(nextUpgrade.buttonId).disabled = false;
     }
 
+    if(save.arena.hp <= 0){
+        let maxhpboost = (save.arena.maxhp / 2) * Math.random();
+        save.arena.maxhp += maxhpboost;
+        save.arena.killed += 1;
+        save.arena.hp = save.arena.maxhp;
+        save.balance += save.arena.maxhp;
+        console.log(maxhpboost);
+        createNotification(`Вы убили Абобу и получили ${save.arena.maxhp} монет.`, "green");
+    }
     save.arena.hp -= save.kps / 10;
 }
 
@@ -135,8 +147,10 @@ function init(){
     kpsCounter = document.getElementById('kps');
     document.getElementById('version').innerText = 'v' + save.version;
     arenaImg = document.querySelector('.arena-wrapper>img');
+    arenaImg.src = `images/${save.arena.skin}.jpg`;
     abobaHPSpan = document.getElementById('abobaHP');
     abobaHPProgress = document.getElementById('abobaHPProgress');
+    killedSpan = document.getElementById('killed');
 
     setTimeout(() => {
         preloadScreen.style.animation = "fadeOut 0.3s ease-out";
@@ -144,10 +158,6 @@ function init(){
         preloadScreen.style.display = "none";
         gameScreen.style.zIndex = 999;
         arenaImg.onclick = () => {
-            if(save.arena.hp - save.kpc <= 0){
-                save.arena.hp = save.arena.maxhp;
-                save.balance += 100 + (100 * Math.random());
-            }
             save.arena.hp -= save.kpc;
             save.kickTimes += 1;
         }
@@ -174,6 +184,12 @@ function createNotification(text, color){
             notification.remove();
         }, 300);
     }, 2500);
+}
+
+function setSkin(skinName){
+    save.arena.skin = skinName;
+    arenaImg.src = `images/${save.arena.skin}.jpg`;
+    createNotification("Установлен скин " + skinName, "green");
 }
 
 document.body.onload = init;

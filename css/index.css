@@ -54,7 +54,7 @@
     align-items: center;
 }
 
-.arena-wrapper>img{
+img{
     width: 100px;
 }
 
@@ -80,4 +80,16 @@
     to{
         bottom: 10px;
     }
+}
+
+.tab.skins>ul{
+    list-style: none;
+}
+.tab.skins>ul>li{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.skin-info{
+    margin: 10px;
 }
