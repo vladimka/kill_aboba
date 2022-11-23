@@ -11,7 +11,7 @@
     <div id="preload">
         <div id="inner-preload">
             <h1>Убить Абобу</h1>
-            <span>v0.0.1</span><br>
+            <span id="version">v0.0.1</span><br>
         </div>
     </div>
     <div id="game">
@@ -21,12 +21,20 @@
             <p>Пинков в секунду: <span id="kps">0</span></p>
             <button>пнуть абобу</button>
             <div class="tabs-buttons">
+                <button onclick="setTab('arena')">Арена</button>
                 <button onclick="setTab('upgrades')">Способы унижения</button>
                 <button onclick="setTab('stats')">Статистика</button>
                 <button onclick="setTab('settings')">Настройки</button>
             </div>
             <div class="tabs">
-                <div class="tab upgrades active">
+                <div class="tab arena active">
+                    <div class="arena-wrapper">
+                        <img src="images/aboba.jpg" alt="Это абоба, нажми на него" title="Это абоба, нажми на него">
+                        <p>HP: <span id="abobaHP">100/100</span></p>
+                        <progress value="100" max="100" id="abobaHPProgress"></progress>
+                    </div>
+                </div>
+                <div class="tab upgrades">
                     <h2>Сделай чё-нибудь, хули</h2>
 
                     <div class="upgrade">
@@ -59,9 +67,7 @@
                 </div>
             </div>
         </div>
-        <div class="notifications">
-            
-        </div>
+        <div class="notifications"></div>
     </div>
     <script src="js/index.js"></script>
 </body>

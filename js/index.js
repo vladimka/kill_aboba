@@ -1,4 +1,6 @@
-let preloadScreen, gameScreen, btn, counter, kpcCounter, lastSaveTimeText, notifications, kickTimes, upgradesCount, kpsCounter;
+let preloadScreen, gameScreen, btn, counter, kpcCounter,
+    lastSaveTimeText, notifications, kickTimes, upgradesCount, kpsCounter,
+    arenaImg, abobaHPSpan, abobaHPProgress;
 let emptySave = {
     balance : 0, kpc : 1, kps : 0,
     kickTimes : 0,
@@ -34,10 +36,15 @@ let emptySave = {
             value : 0
         }
     ],
+    arena : {
+        skin : 'aboba',
+        hp : 100,
+        maxhp : 100
+    },
     last_save_time : new Date(Date.now()),
-    saveVersion : 1
+    version : '0.0.2'
 };
-let actualSaveVersion = 1;
+let actualVersion = '0.0.2';
 let save = loadSave() || emptySave;
 
 function deleteSave(){
@@ -96,6 +103,8 @@ function draw(){
     kickTimes.innerText = save.kickTimes;
     upgradesCount.innerText = save.upgrades.reduce((count, up) => count += up.value, 0);
     kpsCounter.innerText = save.kps;
+    abobaHPSpan.innerText = `${save.arena.hp.toFixed(0)}/${save.arena.maxhp.toFixed(0)}`;
+    abobaHPProgress.value = save.arena.hp;
 
     for(let i = 0; i < save.upgrades.length; i++){
         let upgrade = save.upgrades[i];
@@ -110,7 +119,7 @@ function draw(){
         }else document.getElementById(nextUpgrade.buttonId).disabled = false;
     }
 
-    save.balance += save.kps / 10
+    save.arena.hp -= save.kps / 10;
 }
 
 function init(){
@@ -124,21 +133,30 @@ function init(){
     kickTimes = document.getElementById('kickTimes');
     upgradesCount = document.getElementById('upgradesCount');
     kpsCounter = document.getElementById('kps');
+    document.getElementById('version').innerText = 'v' + save.version;
+    arenaImg = document.querySelector('.arena-wrapper>img');
+    abobaHPSpan = document.getElementById('abobaHP');
+    abobaHPProgress = document.getElementById('abobaHPProgress');
 
-    setInterval(() => {
+    setTimeout(() => {
         preloadScreen.style.animation = "fadeOut 0.3s ease-out";
         preloadScreen.style.opacity = "0";
         preloadScreen.style.display = "none";
         gameScreen.style.zIndex = 999;
+        arenaImg.onclick = () => {
+            if(save.arena.hp - save.kpc <= 0){
+                save.arena.hp = save.arena.maxhp;
+                save.balance += 100 + (100 * Math.random());
+            }
+            save.arena.hp -= save.kpc;
+            save.kickTimes += 1;
+        }
+        if(save.version != actualVersion){
+            alert('Ваше сохранение создано на старой версии игры, пожалуйста удалите его');
+        }
+        setInterval(() => writeSave(), 10000);
+        setInterval(() => draw(), 100);
     }, 1000);
-
-    btn.onclick = () => {
-        save.balance += save.kpc;
-        save.kickTimes += 1;
-    }
-
-    setInterval(() => writeSave(), 10000);
-    setInterval(() => draw(), 100);
 }
 
 function createNotification(text, color){
